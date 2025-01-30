@@ -1,0 +1,71 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# explore
+df= pd.read_csv('Sales.csv')
+df.head()
+df.info()
+df.columns
+  
+#clean
+df.isnull().sum()
+df_clean= df.fillna(0)
+df_clean=df.dropna()
+df_clean.isnull().sum()
+df_subset=df[['Sales','Profit']]
+df_subset
+df_subset.to_csv('dataset_subset.csv')
+
+# plot
+df.plot(kind='box')
+corr_matrix=df_clean.corr(numeric_only=True)
+plt.figure(figsize=(12, 10))
+sns.heatmap(corr_matrix,annot=True)
+sns.regplot(x='Sales', y='Profit', data=df_clean)
+sns.regplot(x='Sales', y='Unit_Price', data=df_clean)
+  
+x=df_clean[['Unit_Price']]
+y=df_clean[['Sales']]
+
+from sklearn.linear_model import LinearRegression
+
+  
+# train model
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+model = LinearRegression() # creating the model
+model.fit(x_train, y_train) # training the model
+y_pred = model.predict(x_test)
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+print(f'Mean Squared Error: {mean_squared_error(y_test, y_pred)}')
+print(f'R^2 Score: {r2_score(y_test, y_pred)}')  # range from 0 to 1
+
+x=df_clean[['Unit_Price', 'Profit']]
+y=df_clean[['Sales']]
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+model = LinearRegression()
+model.fit(x_train, y_train)
+y_pred = model.predict(x_test)
+print(f'Mean Squared Error: {mean_squared_error(y_test, y_pred)}')
+print(f'R^2 Score: {r2_score(y_test, y_pred)}')  # range from 0 to 1
+numeric_df = df_clean.select_dtypes(include='number')
+numeric_df.corr()
+
+# linear regression
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
+
+model = LinearRegression()
+model.fit(x, y)
+linear_regressor = LinearRegression()
+linear_regressor.fit(x, y)
+Y_pred = linear_regressor.predict(x)
+
+plt.scatter(x, y)
+plt.plot(x, Y_pred, color='red')
+plt.show()
+
+  
+  
