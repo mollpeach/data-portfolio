@@ -1,0 +1,74 @@
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+# Create dataframe
+data = pd.DataFrame({
+    'ds': pd.date_range(start='2022-01-01', periods=365, freq='D'), # freq='D': The frequency of the dates, 'D' stands for daily.
+    'y': list(range(365))  # Keep 'y' consistent with the length of 'ds'
+})
+data.head()
+
+data.set_index('ds', inplace=True)
+
+model = sm.tsa.ExponentialSmoothing(data, trend='add', seasonal=None)
+
+results = model.fit()
+
+forecast = results.forecast(steps=1825) # (30 days)
+print('This is the forecast', forecast)
+
+plt.plot(data, label='Actual', color='blue')
+plt.plot(forecast, label='Forecast', color='red')
+plt
+
+# Classification models
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+import pandas as pd
+
+data = pd.read_csv('Sales.csv')
+
+print(data.to_string)
+
+predictors = ['Profit', 'Sales', 'Discount']
+dependent = 'Customer_Segment'
+
+train_data, test_data, train_labels, test_labels = train_test_split(data[predictors], data[dependent], test_size=0.2, random_state=42)
+
+model = LogisticRegression()
+model.fit(train_data, train_labels)
+predictions = model.predict(test_data)
+accuracy = accuracy_score(test_labels, predictions)
+print('Accuracy of the trained model: ', accuracy)
+
+# Plot
+import pandas as pd
+import statsmodels.api as sm
+import matplotlib.pyplot as plt
+
+dataframe=pd.read_csv('Sales.csv')
+dataframe.head()
+
+dataframe['year'] = pd.to_datetime(dataframe['Order_Date']).dt.year
+dataframe['year']
+
+yearly_data = dataframe.groupby('year').agg({'Sales': 'sum', 'Profit': 'sum'})
+
+fig, ax1 = plt.subplots()
+
+ax1.plot(yearly_data.index, yearly_data['Sales'], color='blue')
+ax1.set_xlabel('Year')
+ax1.set_ylabel('Sales', color='blue')
+ax1.tick_params('y', colors='blue')
+
+ax2 = ax1.twinx()
+
+ax2.plot(yearly_data.index, yearly_data['Profit'], color='red')
+ax2.set_ylabel('Profit', color='red')
+ax2.tick_params('y', colors='red')
+
+plt.title('Sales and Profit by Year')
+plt.show()
+
